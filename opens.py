@@ -12,10 +12,18 @@ ip = os.getenv("EC2_IP_ADDRESS")
 browser_ip = os.getenv("BROWSER_IP_ADDRESS")
 username = os.getenv("EC2_USERNAME")
 
+def clean():
+    key = paramiko.RSAKey.from_private_key_file("SSHkey.pem")
+    date = datetime.now()
+    if str(date)[11:16] == "09:01" or str(date)[11:16] == "09:00":
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(ip,username=username, pkey=key)
+        stdin, stdout, stderr = ssh.exec_command("sudo truncate -s 0 /var/log/nginx/access.log")
+
 def opens(id):
     if id != '':    
-        date = datetime.now()
-        
+
         key = paramiko.RSAKey.from_private_key_file("SSHkey.pem")
 
         transport = paramiko.Transport((ip, 22))
@@ -28,12 +36,9 @@ def opens(id):
 
         log_file.close()
         transport.close()
-        
-        if str(date)[11:16] == "09:01" or str(date) == "09:00":
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(ip,username=username, pkey=key)
-            stdin, stdout, stderr = ssh.exec_command("sudo truncate -s 0 /var/log/nginx/access.log")
+
+        clean()
+
         if browser_ip is not None:
             if browser_ip in log_data and browser_ip != "":
                 index = log_data.find(browser_ip)

@@ -12,6 +12,7 @@ from getemail import getemail
 from getemail import addemail
 from getemail import checkemail
 from opens import opens
+from opens import clean
 import quickemailverification
 import pytz
 
@@ -155,6 +156,7 @@ def update_stats():
                 emails_values[i][4] = 'REPLIED'
 
         i+=1
+    clean()
     statsupdate(f'''0 New replies and 0 Emails Sent.''',emails_values,ret)
     update(emails, emails_values)
     return f"{ret}#{openz}"
