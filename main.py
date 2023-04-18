@@ -1,23 +1,13 @@
 from datetime import date
 from datetime import datetime
 from fastapi import FastAPI
-from send_email import send_email
 from num_replies import replies
 import gspread
 import imaplib
-from pathlib import Path
-from dotenv import load_dotenv
 import os
-from getemail import getemail
-from getemail import addemail
-from getemail import checkemail
 from opens import opens
 from opens import clean
-import quickemailverification
 import pytz
-
-emailvalidkey = os.getenv("VALID_VERIFICATION_KEY")
-client = quickemailverification.Client(emailvalidkey)
 
 sheet = os.getenv("SECRET_LOCATION") + "sheetAuth.json"
 
@@ -25,10 +15,6 @@ app = FastAPI()
 
 PORT = 587
 EMAIL_SERVER = 'imap.gmail.com'
-
-current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Path.cwd()
-envars = current_dir / ".env"
-load_dotenv(envars)
 
 @app.get("/")
 def run_myapp():
@@ -83,7 +69,7 @@ def update(emails, emails_values):
     'values': emails_values,
     }])  
 
-
+@app.get("/")
 def update_stats():
 
     print("Updating stats...")
@@ -134,171 +120,3 @@ def update_stats():
     statsupdate(f'''0 New replies and 0 Emails Sent.''',emails_values,ret)
     update(emails, emails_values)
     return f"{ret}#{openz}"
-
-def is_valid_email(email):
-
-    quickemailverification = client.quickemailverification()
-    response = quickemailverification.verify(email)
-    return response.body
-
-def query_data_and_send_emails(templates_values, emails_values,rep):
-    print("Starting E-mail Automation...")
-    present = date.today()
-    email_sent = 0
-    errors = 0
-    i = 14
-    if(emails_values[2][23] != str(present) or emails_values[2][24] == ''):
-        emails_values[2][24] = '0'
-    while(i < len(emails_values) and int(emails_values[2][25]) > email_sent + int(emails_values[2][24])):
-        if emails_values[i][2] == '':
-            i+=1
-            continue
-        print('===========================')
-        print(emails_values[i][2])
-
-        if emails_values[i][0] == '':
-            dict = is_valid_email(emails_values[i][2])
-            if dict['safe_to_send'] == 'false':
-                print('E-mail does not exist')
-                emails_values[i][10] += " | " + '(E-mail does not exist' + ')'
-                emails_values[i][0] = "no"
-                i+=1
-                errors += 1
-                continue
-            else:
-                emails_values[i][0] = "yes"
-        elif emails_values[i][0] == "no":
-            print('E-mail does not exist')
-            emails_values[i][10] += " | " + '(E-mail does not exist' + ')'
-            emails_values[i][0] = "no"
-            i+=1
-            errors += 1            
-            continue
-        ret = 0
-        if emails_values[i][4] == 'REPLIED':
-            i += 1
-            continue
-        days = [-1,-1,-1]
-        if not(emails_values[i][9] == ''):
-            day = emails_values[i][9][0:-2] + str(int(emails_values[i][9][-2:]))
-            day1 = day[0:-1] + str(int(day[-1]) + int(emails_values[2][19]))
-            day2 = day[0:-1] + str(int(day[-1]) + int(emails_values[2][19]) + int(emails_values[2][20]))
-            day3 = day[0:-1] + str(int(day[-1]) + int(emails_values[2][19]) + int(emails_values[2][20]) + int(emails_values[2][21]))
-            days = [day1,day2,day3]
-            for d in range(len(days)):
-                dcopy = days[d]
-                if(days[d][-2] == '-'):
-                    dcopy = days[d][0:-1] + "0" + days[d][-1]
-                days[d] = dcopy
-        if (emails_values[i][4] == '2' and str(present) >= days[2]):
-            print('Sending E3 to', emails_values[i][3], "with email", emails_values[i][2])
-            check = checkemail(emails_values, i)
-            if check == -1:
-                errors += 1
-                emails_values[i][10] += " | " + '(Sender E-mail is on Daily Limit: ' + 'E3' + ')'
-                i += 1
-                continue  
-            elif check == -2:
-                errors += 1
-                emails_values[i][10] += " | " + "(You don't have emails to send!" + ')'
-                i += 1
-                continue  
-            ret = send_email(i, 3, templates_values, emails_values,emails_values[i][1])
-            emails_values[i][4] = '3'
-            email_sent += 1
-            addemail(emails_values[i][1], emails_values)
-        if (emails_values[i][4] == '1' and str(present) >= days[1]):
-            print('Sending E2 to', emails_values[i][3], "with email", emails_values[i][2])
-            check = checkemail(emails_values, i)
-            if check == -1:
-                errors += 1
-                emails_values[i][10] += " | " + '(Sender E-mail is on Daily Limit: ' + 'E2' + ')'
-                i += 1
-                continue  
-            elif check == -2:
-                errors += 1
-                emails_values[i][10] += " | " + "(You don't have emails to send!" + ')'
-                i += 1
-                continue       
-            ret = send_email(i, 2, templates_values, emails_values,emails_values[i][1])              
-            emails_values[i][4] = '2'
-            email_sent += 1
-            addemail(emails_values[i][1], emails_values)
-        if (emails_values[i][4] == '0' and str(present) >= days[0]):
-            print('Sending E1 to', emails_values[i][3], "with email", emails_values[i][2])
-            check = checkemail(emails_values, i)
-            if check == -1:
-                errors += 1
-                emails_values[i][10] += " | " + '(Sender E-mail is on Daily Limit: ' + 'E1' + ')'
-                i += 1
-                continue  
-            elif check == -2:
-                errors += 1
-                emails_values[i][10] += " | " + "(You don't have emails to send!" + ')'
-                i += 1
-                continue                                   
-            ret = send_email(i, 1, templates_values, emails_values,emails_values[i][1])              
-            emails_values[i][4] = '1'
-            email_sent += 1
-            addemail(emails_values[i][1], emails_values)
-        if (emails_values[i][4] == ''):
-            print('Sending E0 to', emails_values[i][3], "with email", emails_values[i][2])
-            if emails_values[i][1] == '':
-                email = getemail(emails_values)
-                if email == -1:
-                    errors += 1
-                    emails_values[i][10] += " | " + "(You don't have emails to send!" + ')'
-                    i += 1
-                    continue  
-                else:
-                    emails_values[i][1] = email
-            check = checkemail(emails_values, i)
-            if check == -1:
-                errors += 1
-                emails_values[i][10] += " | " + '(Sender E-mail is on Daily Limit: ' + 'E0' + ')'
-                i += 1
-                continue  
-            elif check == -2:
-                errors += 1
-                emails_values[i][10] += " | " + "(You don't have emails to send!" + ')'
-                i += 1
-                continue       
-            ret = send_email(i, 0, templates_values, emails_values, emails_values[i][1])              
-            emails_values[i][9] = str(present)
-            emails_values[i][4] = '0'
-            emails_values[i][5] = "no"
-            email_sent += 1
-            addemail(emails_values[i][1], emails_values)
-        if(ret == -1):
-            email_sent -= 1
-            errors += 1
-            print(f"Error sending E{emails_values[i][4]} to {emails_values[i][2]}: {ret}")
-            if(emails_values[i][4] == '0'):
-                emails_values[i][4] = ''
-            else:
-                emails_values[i][4] = str(int(emails_values[i][4])-1)
-        i+=1
-    emails_values[2][24] = int(emails_values[2][24]) + email_sent
-    emails_values[2][23] = str(present)
-    if (int(emails_values[2][24]) == int(emails_values[2][25])):
-        return f'''{rep} New replies and {email_sent} Emails Sent. {errors} Errors -- REACHED MAX DAILY E-MAILS -- '''
-    return f'''{rep} New replies and {email_sent} Emails Sent. {errors} Errors'''
-
-def read_root():
-    print("Welcome to Cold E-mail Automation!")
-    ret = update_stats()
-    ret = ret.split("#")
-
-    gc = gspread.service_account(filename=sheet)
-    emails = gc.open("Emails").sheet1
-    emails_values = emails.get_all_values()
-    templates = gc.open("Emails").get_worksheet(1)
-    templates_values = templates.get_all_values()
-
-    result = query_data_and_send_emails(templates_values, emails_values,int(ret[0]))
-    statsupdate(result, emails_values,0)
-    update(emails, emails_values)
-    return ret[1] + " New opens, " + result
-
-if __name__ == '__main__':
-    read_root(2)
