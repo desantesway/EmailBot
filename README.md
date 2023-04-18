@@ -1,6 +1,6 @@
-Python Cold Email Automation with Open & Reply tracking.
+<h1>Python Cold Email Automation with Open & Reply tracking.</h1>
 
-What you need:
+<h2>What you need:</h2>
 Amazon EC2 with nginx with a .pem ssh named SSHkey.pem on your root,
 sheetAuth.json (sheet authentication, the information will be stored there),
 
@@ -27,7 +27,7 @@ To deploy on the internet I used detaspace with this in spacefile (complete the 
             name: "[TRACKED] Cold Email"
             description: "Quykkdev - Tracked Cold Email Automation with smtp & Data Gather"
             trigger: "schedule"
-            default_interval: "*/1440 * * * *"       
+            default_interval: "* * * * *" (the cron job you want to send the emails)       
         - id: "update_stats"
             name: "Stats updater"
             description: "Checks if any e-mail that you sent has new stats"
@@ -37,5 +37,7 @@ To deploy on the internet I used detaspace with this in spacefile (complete the 
         env:
             - name: TIME_ZONE
             description: TIME_ZONE
-            default: 'Europe/Lisbon'      
+            default: 'Europe/Lisbon'  
 
+<h2>How to use it</h2>    
+soon
