@@ -28,27 +28,6 @@ current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Pat
 envars = current_dir / ".env"
 load_dotenv(envars)
 
-def handle_request(event):
-    action_id = event['id']
-    trigger = event['trigger']
-    
-    if trigger == 'schedule' and (action_id[0:-1] == 'run_myapp' and action_id[-1] in ['1','2','3','4','5','6','7']):
-        run_myapp()
-    elif trigger == 'schedule' and action_id == 'update_stats':
-        update_stats()
-
-@app.post('/__space/v0/actions')
-async def handle_post_request(req_body: dict):
-    event = req_body['event']
-    action_id = event['id']    
-
-    if action_id[0:-1] == 'run_myapp' and action_id[-1] in ['1','2','3','4','5','6','7']:
-        run_myapp()
-    elif action_id == 'update_stats':
-        update_stats()
-    
-    return {'message': 'OK'}
-
 @app.get("/")
 def run_myapp():
     return "[QUYKKDEV - SMTP] " + read_root()
@@ -152,7 +131,6 @@ def update_stats():
     clean()
     statsupdate(f'''0 New replies and 0 Emails Sent.''',emails_values,ret)
     update(emails, emails_values)
-    print("Updated!")
     return f"{ret}#{openz}"
 
 def is_valid_email(email):
