@@ -158,7 +158,7 @@ def update_stats():
                 emails_values[i][4] = 'REPLIED'
 
         i+=1
-    clean()
+    #clean()
     statsupdate(f'''0 New replies and 0 Emails Sent.''',emails_values,ret)
     update(emails, emails_values)
     return f"{ret}#{openz}"
