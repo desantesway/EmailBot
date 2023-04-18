@@ -12,8 +12,10 @@ ip = os.getenv("EC2_IP_ADDRESS")
 browser_ip = os.getenv("BROWSER_IP_ADDRESS")
 username = os.getenv("EC2_USERNAME")
 
+pemkey = os.getenv("SECRET_LOCATION") + "SSHkey.pem"
+
 def clean():
-    key = paramiko.RSAKey.from_private_key_file("SSHkey.pem")
+    key = paramiko.RSAKey.from_private_key_file(pemkey)
     date = datetime.now()
     if str(date)[11:16] == "09:01" or str(date)[11:16] == "09:00":
         ssh = paramiko.SSHClient()
@@ -24,7 +26,7 @@ def clean():
 def opens(id):
     if id != '':    
 
-        key = paramiko.RSAKey.from_private_key_file("SSHkey.pem")
+        key = paramiko.RSAKey.from_private_key_file(pemkey)
 
         transport = paramiko.Transport((ip, 22))
         transport.connect(username=username, pkey=key)

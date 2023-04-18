@@ -19,7 +19,7 @@ import pytz
 emailvalidkey = os.getenv("VALID_VERIFICATION_KEY")
 client = quickemailverification.Client(emailvalidkey)
 
-sheet = os.getenv("SHEET_AUTH_LOCATION") + "sheetAuth.json"
+sheet = os.getenv("SECRET_LOCATION") + "sheetAuth.json"
 
 app = FastAPI()
 
@@ -29,34 +29,6 @@ EMAIL_SERVER = 'imap.gmail.com'
 current_dir = Path(__file__).resolve().parent if "__file__" in locals() else Path.cwd()
 envars = current_dir / ".env"
 load_dotenv(envars)
-
-def handle_request(event):
-    action_id = event['id']
-    trigger = event['trigger']
-    
-    if trigger == 'schedule' and action_id == 'run_myapp':
-        run_myapp()
-    elif trigger == 'schedule' and action_id == 'update_stats':
-        update_stats()
-    #elif trigger == 'schedule' and action_id == 'run_myapp_2':
-    #    run_myapp_2()
-
-@app.post('/__space/v0/actions')
-async def handle_post_request(req_body: dict):
-    event = req_body['event']
-    action_id = event['id']    
-
-    if action_id == 'run_myapp':
-        run_myapp()
-    elif action_id == 'update_stats':
-        update_stats()
-    #elif action_id == 'run_myapp_2':
-    #    run_myapp_2()
-    
-    return {'message': 'OK'}
-
-#def run_myapp_2():
-#    return "[SENDGRID] " + read_root(2)
 
 @app.get("/")
 def run_myapp():
@@ -158,7 +130,7 @@ def update_stats():
                 emails_values[i][4] = 'REPLIED'
 
         i+=1
-    #clean()
+    clean()
     statsupdate(f'''0 New replies and 0 Emails Sent.''',emails_values,ret)
     update(emails, emails_values)
     return f"{ret}#{openz}"
