@@ -4,3 +4,4 @@ fastapi
 quickemailverification
 paramiko
 pytz
+uvicorn
