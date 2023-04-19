@@ -19,7 +19,7 @@ def clean():
     key = paramiko.RSAKey.from_private_key_file(pemkey)
     date = datetime.now()
     print(date)
-    if str(date)[11:16] == "09:01" or str(date)[11:16] == "09:00":
+    if str(date)[11:16] == "08:01" or str(date)[11:16] == "08:00":
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         ssh.connect(ip,username=username, pkey=key)
