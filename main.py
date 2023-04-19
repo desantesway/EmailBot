@@ -1,5 +1,4 @@
-from datetime import date
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from fastapi import FastAPI
 from send_email import send_email
 from num_replies import replies
@@ -180,16 +179,11 @@ def query_data_and_send_emails(templates_values, emails_values,rep):
             continue
         days = [-1,-1,-1]
         if not(emails_values[i][9] == ''):
-            day = emails_values[i][9][0:-2] + str(int(emails_values[i][9][-2:]))
-            day1 = day[0:-1] + str(int(day[-1]) + int(emails_values[2][19]))
-            day2 = day[0:-1] + str(int(day[-1]) + int(emails_values[2][19]) + int(emails_values[2][20]))
-            day3 = day[0:-1] + str(int(day[-1]) + int(emails_values[2][19]) + int(emails_values[2][20]) + int(emails_values[2][21]))
-            days = [day1,day2,day3]
-            for d in range(len(days)):
-                dcopy = days[d]
-                if(days[d][-2] == '-'):
-                    dcopy = days[d][0:-1] + "0" + days[d][-1]
-                days[d] = dcopy
+            day = str(emails_values[i][9])
+            datetype = datetime.strptime(day, "%Y-%m-%d").date()
+            days[0] = str(datetype + timedelta(days=int(emails_values[2][19])))
+            days[1] = str(datetype + timedelta(days=int(emails_values[2][19]) + int(emails_values[2][20])))
+            days[2] = str(datetype + timedelta(days=int(emails_values[2][19]) + int(emails_values[2][20])+ int(emails_values[2][21])))
         if (emails_values[i][4] == '2' and str(present) >= days[2]):
             print('Sending E3 to', emails_values[i][3], "with email", emails_values[i][2])
             check = checkemail(emails_values, i)
