@@ -279,20 +279,19 @@ def query_data_and_send_emails(templates_values, emails_values,rep):
     return f'''{rep} New replies and {email_sent} Emails Sent. {errors} Errors'''
 
 def read_root():
-    print("Welcome to Cold E-mail Automation!")
-    ret = update_stats()
-    ret = ret.split("#")
+    time = str(datetime.now())
+    if time[11:13] == "13" or "14":
+        print("Welcome to Cold E-mail Automation!")
+        ret = update_stats()
+        ret = ret.split("#")
 
-    gc = gspread.service_account(filename=sheet)
-    emails = gc.open("Emails").sheet1
-    emails_values = emails.get_all_values()
-    templates = gc.open("Emails").get_worksheet(1)
-    templates_values = templates.get_all_values()
+        gc = gspread.service_account(filename=sheet)
+        emails = gc.open("Emails").sheet1
+        emails_values = emails.get_all_values()
+        templates = gc.open("Emails").get_worksheet(1)
+        templates_values = templates.get_all_values()
 
-    result = query_data_and_send_emails(templates_values, emails_values,int(ret[0]))
-    statsupdate(result, emails_values,0)
-    update(emails, emails_values)
-    return ret[1] + " New opens, " + result
-
-if __name__ == '__main__':
-    read_root(2)
+        result = query_data_and_send_emails(templates_values, emails_values,int(ret[0]))
+        statsupdate(result, emails_values,0)
+        update(emails, emails_values)
+        return ret[1] + " New opens, " + result
