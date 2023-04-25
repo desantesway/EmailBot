@@ -13,7 +13,7 @@
 <li>EC2_USERNAME (ec username, normaly is "ubuntu")</li>
 <li>BROWSER_IP_ADDRESS (the ip address the email gives to you so you can exclude the emails views by you)</li>
 <li>TIME_ZONE (your time zone in pytz format)</li>
-<li>SECRET_LOCATION = '' (location where your SSHkey.pem and sheetAuth.json are, " " means root)</li>
+<li>SECRET_LOCATION = '' (location where your SSHkey.pem and sheetAuth.json are, "" means root)</li>
 
 <h2>How to use it</h2>    
 soon
