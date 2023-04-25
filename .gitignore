@@ -6,6 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+#env
+SSHkey.pem
+sheetAuth.json
+
 # Distribution / packaging
 .Python
 build/

@@ -280,8 +280,7 @@ def query_data_and_send_emails(templates_values, emails_values,rep):
     return f'''{rep} New replies and {email_sent} Emails Sent. {errors} Errors'''
 
 def read_root():
-    time = str(datetime.now())
-    if time[11:13] == "13" or "14":
+    if str(datetime.now())[11:16] in ["13:54","13:55","14:03","14:04","14:05","14:09","14:10","14:12","14:13","14:14","14:21","14:22"]:
         print("Welcome to Cold E-mail Automation!")
         ret = update_stats()
         ret = ret.split("#")
@@ -296,3 +295,5 @@ def read_root():
         statsupdate(result, emails_values,0)
         update(emails, emails_values)
         return ret[1] + " New opens, " + result
+    else:
+        return "PING"
