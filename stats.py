@@ -1,4 +1,3 @@
-
 def stats(emails):
     i = 14
     dict = {}
@@ -31,6 +30,10 @@ def stats(emails):
         emails[2][28+int(keys)] = dict[keys][0]
         emails[3][28+int(keys)] = dict[keys][1]
         emails[4][28+int(keys)] = dict[keys][2]
-        emails[5][28+int(keys)] = str((dict[keys][1] * 100) / dict[keys][0]) + "%"
-        emails[6][28+int(keys)] = str((dict[keys][2] * 100) / dict[keys][0]) + "%"
+        if sent == 0:
+            emails[5][28+int(keys)] = "0%"
+            emails[6][28+int(keys)] = "0%"
+        else:
+            emails[5][28+int(keys)] = str("{:.2%}".format(((dict[keys][1] * 100) / dict[keys][0])/100)).replace(".",",")
+            emails[6][28+int(keys)] = str("{:.2%}".format(((dict[keys][2] * 100) / dict[keys][0])/100)).replace(".",",")
     return emails
