@@ -1,49 +1,82 @@
-<h1>Python Cold Email Automation with Open & Reply tracking.</h1>
+# 📧 Python Cold Email Automation with Open & Reply Tracking
 
-This web app reads and registers info in a google sheets, it supports multiple email senders and how much each can send per day.
+This web app automates **cold email campaigns** with **open & reply tracking**.  
+It integrates with **Google Sheets** for campaign management, supports **multiple senders**, and enforces **daily sending limits** per account.
 
-## Google Sheets
+---
 
-In the sheets with the link bellow, you will get all the averages of every email calculated for you. 
+## 📊 Google Sheets Integration
 
-To use it, you can put your email adresses in the cells O9, P9, Q9, etc.
+A Google Sheets document is used to control email sending and track statistics.  
+You can get a copy of the template [here](https://docs.google.com/spreadsheets/d/1IuEbKSy8YDeLrlz0ngSyRuTjIQoC_BEiEqjS7ZuCGCI/edit?usp=sharing).
 
-From it's the email you want to send from, email is the one that receives the email, preset is the number of the email preset in the Templates page starting from 0, E0 mean first email sent, E1 means the second, etc.
+- Add your email addresses in the cells `O9`, `P9`, `Q9`, etc.
+- **From** → the sender’s email.  
+- **Email** → the recipient’s email.  
+- **Preset** → template number (from the *Templates* sheet, starting at `0`).  
+  - Example: `E0` = first email, `E1` = second email, etc.  
+- **E1 Date** → delay (in days) before sending the follow-up if there was no reply.  
+- **Custom Variables** → placeholders for personalization (use `{var}` format).  
 
-On the right side E1 Date, means how long in days to send E1 after E0 if the email got no response back, then the same for others but the email is sent after the days provided the previous email.
+The sheet automatically calculates averages and performance metrics for each sender.
 
-Under custom variables that's where you can fill the custom variables you want to put in your email presets - all variables should be in this format {var}
+---
 
-<h2>What you need:</h2>
-<p>Amazon EC2 with nginx with pixel.png there with a .pem ssh named SSHkey.pem,</p>
-<p>sheetAuth.json (sheet authentication, the information will be stored there) to a <a href="https://docs.google.com/spreadsheets/d/1IuEbKSy8YDeLrlz0ngSyRuTjIQoC_BEiEqjS7ZuCGCI/edit?usp=sharing">copy of this</a>,</p>
-<p>quickemailverification.com account (if you send e-mails to a non existent account you can be flagged as spam).</p>
-<h3>Environment</h3>
-<li>PASSWORD_[email in sheets at line 9] (your email password)</li>
-<li>EMAIL_[email in sheets at line 9] (your email)</li>
-<li>USER (what you want to show on your email name to the receiver)</li>
-<li>VALID_VERIFICATION_KEY (key for quickemailverification api)</li>
-<li>EC2_IP_ADDRESS (ec2 ip address)</li>
-<li>EC2_USERNAME (ec username, normaly is "ubuntu")</li>
-<li>BROWSER_IP_ADDRESS (the ip address the email gives to you so you can exclude the emails views by you)</li>
-<li>TIME_ZONE (your time zone in pytz format)</li>
-<li>SECRET_LOCATION = '' (location where your SSHkey.pem and sheetAuth.json are, "" means root)</li>
+## ⚙️ Requirements
 
-<h2>How to use it</h2> 
+You’ll need:
+
+- **Amazon EC2 instance** with Nginx hosting `pixel.png`  
+- **SSH key** (`SSHkey.pem`)  
+- **Google Sheets authentication** (`sheetAuth.json`) linked to your sheet copy  
+- **[quickemailverification.com](https://quickemailverification.com/)** account (to validate emails and avoid spam flags)  
+
+---
+
+## 🌍 Environment Variables
+
+Create a `.env` file with the following values:
+
+```ini
+# Email credentials (for each sender listed in row 9 of the sheet)
+PASSWORD_[email] = your-email-password
+EMAIL_[email] = your-email-address
+
+# Display name for outgoing emails
+USER = Your Name
+
+# QuickEmailVerification API key
+VALID_VERIFICATION_KEY = your-verification-key
+
+# EC2 server details
+EC2_IP_ADDRESS = your-ec2-ip
+EC2_USERNAME = ubuntu   # usually "ubuntu"
+
+# Browser & timezone
+BROWSER_IP_ADDRESS = your-browser-ip
+TIME_ZONE = Europe/Lisbon  # example, must be pytz format
+
+# Location of your keys
+SECRET_LOCATION = ''  # path where SSHkey.pem and sheetAuth.json are stored ("" = root)
+```
+---
+
+## 🚀 Installation & Usage
 
 Clone the repository
-
-    git clone https://github.com/desantesway/EmailBot.git
-
+```bash
+git clone https://github.com/desantesway/EmailBot.git
+```
 Go to the directory
-
-    cd EmailBot
-
+```bash
+cd EmailBot
+```
 Install the libraries
-
-    pip install -r requirements.txt
-
+```bash
+pip install -r requirements.txt
+```
 Then, create an .env with the values above and run your app!
+
 
 
 
