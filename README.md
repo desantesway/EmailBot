@@ -2,7 +2,7 @@
 
 This web app reads and registers info in a google sheets, it supports multiple email senders and how much each can send per day.
 
-# Google Sheets
+## Google Sheets
 
 In the sheets with the link bellow, you will get all the averages of every email calculated for you. 
 
@@ -44,5 +44,6 @@ Install the libraries
     pip install -r requirements.txt
 
 Then, create an .env with the values above and run your app!
+
 
 
