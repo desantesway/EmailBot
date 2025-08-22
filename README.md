@@ -21,3 +21,13 @@ Clone the repository
 
     git clone https://github.com/desantesway/EmailBot.git
 
+Go to the directory
+
+    cd EmailBot
+
+Install the libraries
+
+    pip install -r requirements.txt
+
+Then, create an .env with the values above
+And run your app!
