@@ -29,5 +29,5 @@ Install the libraries
 
     pip install -r requirements.txt
 
-Then, create an .env with the values above
-And run your app!
+Then, create an .env with the values above and run your app!
+
