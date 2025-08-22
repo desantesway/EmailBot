@@ -15,5 +15,9 @@
 <li>TIME_ZONE (your time zone in pytz format)</li>
 <li>SECRET_LOCATION = '' (location where your SSHkey.pem and sheetAuth.json are, "" means root)</li>
 
-<h2>How to use it</h2>    
-soon
+<h2>How to use it</h2> 
+
+Clone the repository
+
+    git clone https://github.com/desantesway/EmailBot.git
+
