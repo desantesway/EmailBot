@@ -15,7 +15,7 @@ On the right side E1 Date, means how long in days to send E1 after E0 if the ema
 Under custom variables that's where you can fill the custom variables you want to put in your email presets - all variables should be in this format {var}
 
 <h2>What you need:</h2>
-<p>Amazon EC2 with nginx with a .pem ssh named SSHkey.pem,</p>
+<p>Amazon EC2 with nginx with pixel.png there with a .pem ssh named SSHkey.pem,</p>
 <p>sheetAuth.json (sheet authentication, the information will be stored there) to a <a href="https://docs.google.com/spreadsheets/d/1IuEbKSy8YDeLrlz0ngSyRuTjIQoC_BEiEqjS7ZuCGCI/edit?usp=sharing">copy of this</a>,</p>
 <p>quickemailverification.com account (if you send e-mails to a non existent account you can be flagged as spam).</p>
 <h3>Environment</h3>
@@ -44,6 +44,7 @@ Install the libraries
     pip install -r requirements.txt
 
 Then, create an .env with the values above and run your app!
+
 
 
 
